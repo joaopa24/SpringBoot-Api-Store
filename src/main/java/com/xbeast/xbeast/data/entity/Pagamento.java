@@ -14,6 +14,7 @@ public class Pagamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pagamento")
     private Integer idPagamento;
 
     @OneToOne

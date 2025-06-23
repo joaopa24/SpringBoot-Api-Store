@@ -1,5 +1,7 @@
+DROP TABLE IF EXISTS pagamento;
+
 CREATE TABLE pagamento (
-    id_pagamento INT PRIMARY KEY,
+    id_pagamento SERIAL PRIMARY KEY,
     id_pedido INT NOT NULL,
     tipo_pagamento VARCHAR(50) NOT NULL,
     data_pagamento DATE NOT NULL,

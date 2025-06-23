@@ -18,6 +18,7 @@ public class Cliente implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_cliente")
     private Integer idCliente;
 
     private String nome;
@@ -39,7 +40,7 @@ public class Cliente implements UserDetails {
     @Column(nullable = false)
     private String role = "ROLE_CLIENTE"; // default
 
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos;
 
     // === Métodos da interface UserDetails ===

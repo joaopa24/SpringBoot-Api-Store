@@ -1,5 +1,7 @@
+DROP TABLE IF EXISTS pedido;
+
 CREATE TABLE pedido (
-    id_pedido INT PRIMARY KEY,
+    id_pedido SERIAL PRIMARY KEY,
     id_cliente INT NOT NULL,
     data_pedido DATE NOT NULL,
     status VARCHAR(50),

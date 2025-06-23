@@ -1,8 +1,12 @@
+DROP TABLE IF EXISTS cliente;
+
 CREATE TABLE cliente (
-    id_cliente INT PRIMARY KEY,
+    id_cliente SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     telefone VARCHAR(20),
     endereco VARCHAR(200),
-    cpf VARCHAR(14) UNIQUE NOT NULL
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'ROLE_USER'
 );

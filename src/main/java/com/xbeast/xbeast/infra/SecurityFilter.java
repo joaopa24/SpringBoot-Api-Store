@@ -16,32 +16,47 @@ import java.io.IOException;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
-    @Autowired
-    TokenService tokenService;
-    @Autowired
-    ClienteRepository repository;
 
-    @SuppressWarnings("null")
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private ClienteRepository repository;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var token = this.recoverToken(request);
-        System.out.println(token);
-        
-        if(token != null){
-            var login = tokenService.validateToken(token);
-            System.out.println(login);
-            UserDetails user = repository.findByEmail(login);
-            System.out.println(user);
-            
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        String token = recoverToken(request);
+        if (token != null) {
+            String email = tokenService.validateToken(token);
+
+            if (email != null) {
+                UserDetails user = repository.findByEmail(email);
+
+                if (user != null) {
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            user, null, user.getAuthorities()
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    System.err.println("[AUTH] Usuário não encontrado para o e-mail: " + email);
+                }
+
+            } else {
+                System.err.println("[AUTH] Token inválido ou expirado.");
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 
-    private String recoverToken(HttpServletRequest request){
-        var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
+    private String recoverToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
         return authHeader.replace("Bearer ", "");
     }
 }

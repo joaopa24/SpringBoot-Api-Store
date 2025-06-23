@@ -1,5 +1,7 @@
+DROP TABLE IF EXISTS item_pedido;
+
 CREATE TABLE item_pedido (
-    id_item INT PRIMARY KEY,
+    id_item SERIAL PRIMARY KEY,
     id_pedido INT NOT NULL,
     id_produto INT NOT NULL,
     quantidade INT NOT NULL,

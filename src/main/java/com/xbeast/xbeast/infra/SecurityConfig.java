@@ -17,40 +17,33 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     @Autowired
     SecurityFilter securityFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(auth -> auth
+
+                        // Público
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(
-                    "/v1/api/get-token",
-                                "/swagger-ui.html",
-                                "/swagger-ui/*",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**").permitAll()
-                        .requestMatchers("/swagger-ui.html","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()  // Permite acesso ao Swagger
-                        .requestMatchers(HttpMethod.GET, "/auth/current").hasAnyAuthority("admin","user")
-                        .requestMatchers(HttpMethod.POST, "/pessoas/{idPessoa}/emprestar/{idLivro}").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.POST, "/pessoas/{idPessoa}/devolver/{idLivro}").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.GET, "/pessoas/listar").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.GET, "/pessoas/{idPessoa}").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.POST, "/pessoas/registrar").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.PUT, "/pessoas/atualizar/{idPessoa}").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.DELETE, "/deletar/{idPessoa}").hasAuthority("admin")
-                        .requestMatchers(HttpMethod.GET, "/livros/listar").hasAnyAuthority("admin","user")
-                        .requestMatchers(HttpMethod.GET, "/livros/{idLivro}").hasAnyAuthority("admin","user")
-                        .requestMatchers(HttpMethod.POST, "/livros/registrar").hasAnyAuthority("admin")
-                        .requestMatchers(HttpMethod.POST, "/livros/atualizar/{idLivro}").hasAnyAuthority("admin")
-                        .requestMatchers(HttpMethod.POST, "/livros/deletar/{idLivro}").hasAnyAuthority("admin")
-                        .requestMatchers(HttpMethod.POST, "/livros/registrar/{isbn}").hasAnyAuthority("admin")
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+
+                        // Acesso autenticado (USER e ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/produtos/**", "/categorias/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/compras/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+
+                        // ADMIN somente
+                        .requestMatchers(HttpMethod.POST, "/produtos/**", "/categorias/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/produtos/**", "/categorias/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/produtos/**", "/categorias/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ROLE_ADMIN")
+
+                        // Outros
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -63,7 +56,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-} 
+}

@@ -19,7 +19,7 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-    public ClienteResponseDTO encontrarPorId(Long idCliente) {
+    public ClienteResponseDTO encontrarPorId(Integer idCliente) {
         Optional<Cliente> cliente = clienteRepository.findById(idCliente);
         if (cliente.isPresent()) {
             return new ClienteResponseDTO(cliente.get());
@@ -50,7 +50,7 @@ public class ClienteService {
         return new ClienteResponseDTO(clienteSalvo);
     }
 
-    public ClienteResponseDTO atualizar(Long idCliente, ClienteRequestDTO clienteRequestDTO) {
+    public ClienteResponseDTO atualizar(Integer idCliente, ClienteRequestDTO clienteRequestDTO) {
         Optional<Cliente> clienteExistente = clienteRepository.findById(idCliente);
         if (clienteExistente.isPresent()) {
             Cliente cliente = clienteExistente.get();
@@ -71,7 +71,7 @@ public class ClienteService {
         }
     }
 
-    public boolean deletar(Long idCliente) {
+    public boolean deletar(Integer idCliente) {
         Optional<Cliente> cliente = clienteRepository.findById(idCliente);
         if (cliente.isPresent()) {
             clienteRepository.deleteById(idCliente);

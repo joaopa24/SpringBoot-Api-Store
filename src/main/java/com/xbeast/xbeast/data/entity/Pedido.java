@@ -13,8 +13,16 @@ import java.util.List;
 @Entity
 public class Pedido {
 
+    public enum Status {
+        PENDENTE,
+        EM_PREPARACAO,
+        FINALIZADO,
+        CANCELADO
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pedido")
     private Integer idPedido;
 
     @ManyToOne
@@ -22,10 +30,13 @@ public class Pedido {
     private Cliente cliente;
 
     private LocalDate dataPedido;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private BigDecimal valorTotal;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens;
 
     @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL)

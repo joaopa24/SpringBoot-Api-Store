@@ -14,6 +14,7 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_produto")
     private Integer idProduto;
 
     private String nome;
@@ -21,6 +22,7 @@ public class Produto {
     private BigDecimal preco;
     private String marca;
     private Integer estoque;
+    private String url_image;
 
     @ManyToOne
     @JoinColumn(name = "id_categoria")
