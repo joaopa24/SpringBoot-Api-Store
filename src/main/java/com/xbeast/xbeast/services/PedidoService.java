@@ -84,9 +84,11 @@ public class PedidoService {
             .collect(Collectors.toList())
         : List.of();
 
-    PagamentoResponseDTO pagamento = pedido.getPagamento() != null
-        ? new PagamentoResponseDTO(pedido.getPagamento())
-        : null;
+    List<PagamentoResponseDTO> pagamentos = pedido.getPagamentos() != null
+    ? pedido.getPagamentos().stream()
+        .map(PagamentoResponseDTO::new)
+        .toList()
+    : List.of();
 
     return new PedidoResponseDTO(
         pedido.getIdPedido(),
@@ -95,7 +97,7 @@ public class PedidoService {
         pedido.getStatus().name(),
         clienteDTO,
         itens,
-        pagamento
+        pagamentos
     );
 }
  

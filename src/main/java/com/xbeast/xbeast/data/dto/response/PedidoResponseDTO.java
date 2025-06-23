@@ -11,5 +11,5 @@ public record PedidoResponseDTO(
     String status,
     ClienteResponseDTO cliente,
     List<ItemPedidoResponseDTO> itens,
-    PagamentoResponseDTO pagamento
+    List<PagamentoResponseDTO> pagamentos
 ) {}

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 public record PagamentoResponseDTO(
     Integer idPagamento,
+    Integer idPedido,
     LocalDate dataPagamento,
     String tipoPagamento,
     BigDecimal valor
@@ -14,6 +15,7 @@ public record PagamentoResponseDTO(
     public PagamentoResponseDTO(Pagamento pagamento) {
         this(
             pagamento.getIdPagamento(),
+            pagamento.getPedido() != null ? pagamento.getPedido().getIdPedido() : null,
             pagamento.getDataPagamento(),
             pagamento.getTipoPagamento(),
             pagamento.getValor()

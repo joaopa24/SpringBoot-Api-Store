@@ -17,8 +17,8 @@ public class Pagamento {
     @Column(name = "id_pagamento")
     private Integer idPagamento;
 
-    @OneToOne
-    @JoinColumn(name = "id_pedido")
+    @ManyToOne
+    @JoinColumn(name = "id_pedido", nullable = false)
     private Pedido pedido;
 
     private String tipoPagamento;
